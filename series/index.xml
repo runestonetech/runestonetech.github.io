@@ -6,11 +6,20 @@
     <description>Recent content in Series on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 22 Mar 2023 00:00:00 +0000</lastBuildDate><atom:link href="/series/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 09 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="/series/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>proxmox</title>
+      <link>/series/proxmox/</link>
+      <pubDate>Fri, 09 Aug 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/series/proxmox/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>home assistant</title>
       <link>/series/home-assistant/</link>
-      <pubDate>Wed, 22 Mar 2023 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 22 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/series/home-assistant/</guid>
       <description></description>
