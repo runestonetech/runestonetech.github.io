@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>monitoring on </title>
+    <link>/tags/monitoring/</link>
+    <description>Recent content in monitoring on </description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 13 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/monitoring/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Export Home Assistant metrics to InfluxDB</title>
+      <link>/posts/hass/influx_db/</link>
+      <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/posts/hass/influx_db/</guid>
+      <description>Sending our Home Assistant metrics to InfluxDB allows for long-term storage,  monitoring, and visualization with tools like Grafana</description>
+    </item>
+    
+  </channel>
+</rss>

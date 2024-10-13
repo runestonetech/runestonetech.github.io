@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<head>
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+<script defer language="javascript" type="text/javascript" src="/js/bundle.min.38ccdf5c998a71d2ad889faefccbe9132577d265b25e73d94a1be540ebcaaa18.js"></script>
+
+
+
+
+
+
+    
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    
+    <link rel="icon" href=/favicon.png>
+
+    
+    
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+
+
+<!-- Open Graph image and Twitter Card metadata -->
+
+<title itemprop="name">runestone - Export Home Assistant metrics to InfluxDB</title>
+<meta property="og:title" content=runestone&#32;-&#32;Export&#32;Home&#32;Assistant&#32;metrics&#32;to&#32;InfluxDB />
+<meta name="twitter:title" content=runestone&#32;-&#32;Export&#32;Home&#32;Assistant&#32;metrics&#32;to&#32;InfluxDB />
+<meta itemprop="name" content=runestone&#32;-&#32;Export&#32;Home&#32;Assistant&#32;metrics&#32;to&#32;InfluxDB />
+<meta name="application-name" content=runestone&#32;-&#32;Export&#32;Home&#32;Assistant&#32;metrics&#32;to&#32;InfluxDB />
+<meta property="og:site_name" content="" />
+
+
+<meta name="description" content="Export Home Assistant metrics to InfluxDB" />
+<meta itemprop="description" content="Export Home Assistant metrics to InfluxDB" />
+<meta property="og:description" content="Export Home Assistant metrics to InfluxDB" />
+<meta name="twitter:description" content="Export Home Assistant metrics to InfluxDB" />
+
+
+<base href="/posts/hass/influx_db/" />
+<link rel="canonical" href="/posts/hass/influx_db/" itemprop="url" />
+<meta name="url" content="/posts/hass/influx_db/" />
+<meta name="twitter:url" content="/posts/hass/influx_db/" />
+<meta property="og:url" content="/posts/hass/influx_db/" />
+
+
+<meta property="og:updated_time" content="2024-10-13T00:00:00Z" />
+
+
+<link rel="sitemap" type="application/xml" title="Sitemap" href='/sitemap.xml' />
+
+<meta name="robots" content="index,follow" />
+<meta name="googlebot" content="index,follow" />
+
+
+<meta name="twitter:site" content="" />
+<meta name="twitter:creator" content="" />
+<meta property="fb:admins" content="" />
+
+
+<meta name="apple-mobile-web-app-title" content="" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.92.2" />
+
+
+    
+    
+
+<link type="text/css" rel="stylesheet" href="/css/bundle.min.a4ce1ced99e5a4daa43d82d7b006514e6399225773110b27f4746ffa5622cd5c.css">
+
+
+    
+    <style>
+    body {
+        --sidebar-bg-color: #202020;
+        --sidebar-img-border-color: #515151;
+        --sidebar-p-color: #909090;
+        --sidebar-h1-color: #FFF;
+        --sidebar-a-color: #FFF;
+        --sidebar-socials-color: #FFF;
+        --text-color: #222;
+        --bkg-color: #FAF9F6;
+        --post-title-color: #303030;
+        --list-color: #5A5A5A;
+        --link-color: #268BD2;
+        --date-color: #515151;
+        --table-border-color: #E5E5E5;
+        --table-stripe-color: #F9F9F9;
+        --code-color: #000;
+        --code-background-color: #E5E5E5;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+        --moon-sun-color: #FFF;
+        --moon-sun-background-color: #515151;
+    }
+    body.dark-theme {
+        --text-color: #EEE;
+        --bkg-color: #121212;
+        --post-title-color: #DBE2E9;
+        --list-color: #9D9D9D;
+        --link-color: #268BD2;
+        --date-color: #9A9A9A;
+        --table-border-color: #515151;
+        --table-stripe-color: #202020;
+        --code-color: #FFF;
+        --code-background-color: #515151;
+        --code-block-color: #FFF;
+        --code-block-background-color: #272822;
+    }
+    body {
+        background-color: var(--bkg-color);
+    }
+</style>
+
+</head>
+
+    <body class="dark-theme">
+        <div class="wrapper">
+            <aside class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="light-dark" align="right">
+    <button class="btn-light-dark" title="Toggle light/dark mode">
+        <svg class="moon" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M6 .278a.768.768 0 0 1 .08.858a7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277c.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316a.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71C0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        </svg>
+        <svg class="sun" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
+            <path fill="currentColor" d="M8 12a4 4 0 1 0 0-8a4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </svg>
+    </button>
+</div>
+
+        <div class="sidebar-about">
+    <h1 class="brand">
+        
+            <a href="/">
+                <img src="/images/raven01_main.png" alt="brand image">
+            </a>
+        
+        
+            <a href="/">
+                <h1>runestone</h1>
+            </a>
+        
+    </h1>
+    <p class="lead">
+    decoding technology
+    </p>
+</div>
+
+        <nav>
+    <ul class="sidebar-nav">
+
+        
+        
+        
+        
+            
+
+            
+                
+                
+                    <li class="heading">
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                
+            
+                
+                
+            
+            
+                
+                
+                        
+                
+                        
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+        
+            
+
+            
+                
+                
+            
+                
+                
+                    <li class="heading">
+                        <a href="/posts/">Posts</a>
+                    </li>
+                    
+                        <li class="sub-heading">
+                            Recent
+                        </li>
+                        
+                            <li class="bullet">
+                                <a href="/posts/hass/influx_db/">Export Home Assistant metrics to InfluxDB</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="/posts/proxmox/configure_notifications/">Configuring notifications in Proxmox</a>
+                            </li>
+                        
+                            <li class="bullet">
+                                <a href="/posts/tasmota_switchbot_mini/">SwitchBot Mini Smart Plugs with Tasmota &#43; Home Assistant</a>
+                            </li>
+                        
+                    
+                
+            
+            
+                
+                
+                        
+                
+                        
+                
+            
+                
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+                        
+                
+            
+        
+
+    </ul>
+</nav>
+
+        
+    <a target="_blank" class="social" title="GitHub" href="https://github.com/blackfeather9">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="-2 -2 24 24">
+            <path fill="currentColor" d="M18.88 1.099C18.147.366 17.265 0 16.233 0H3.746C2.714 0 1.832.366 1.099 1.099C.366 1.832 0 2.714 0 3.746v12.487c0 1.032.366 1.914 1.099 2.647c.733.733 1.615 1.099 2.647 1.099H6.66c.19 0 .333-.007.429-.02a.504.504 0 0 0 .286-.169c.095-.1.143-.245.143-.435l-.007-.885c-.004-.564-.006-1.01-.006-1.34l-.3.052c-.19.035-.43.05-.721.046a5.555 5.555 0 0 1-.904-.091a2.026 2.026 0 0 1-.872-.39a1.651 1.651 0 0 1-.572-.8l-.13-.3a3.25 3.25 0 0 0-.41-.663c-.186-.243-.375-.407-.566-.494l-.09-.065a.956.956 0 0 1-.17-.156a.723.723 0 0 1-.117-.182c-.026-.061-.004-.111.065-.15c.07-.04.195-.059.378-.059l.26.04c.173.034.388.138.643.311a2.1 2.1 0 0 1 .631.677c.2.355.44.626.722.813c.282.186.566.28.852.28c.286 0 .533-.022.742-.065a2.59 2.59 0 0 0 .585-.196c.078-.58.29-1.028.637-1.34a8.907 8.907 0 0 1-1.333-.234a5.314 5.314 0 0 1-1.223-.507a3.5 3.5 0 0 1-1.047-.872c-.277-.347-.505-.802-.683-1.365c-.177-.564-.266-1.215-.266-1.952c0-1.049.342-1.942 1.027-2.68c-.32-.788-.29-1.673.091-2.652c.252-.079.625-.02 1.119.175c.494.195.856.362 1.086.5c.23.14.414.257.553.352a9.233 9.233 0 0 1 2.497-.338c.859 0 1.691.113 2.498.338l.494-.312a6.997 6.997 0 0 1 1.197-.572c.46-.174.81-.221 1.054-.143c.39.98.424 1.864.103 2.653c.685.737 1.028 1.63 1.028 2.68c0 .737-.089 1.39-.267 1.957c-.177.568-.407 1.023-.689 1.366a3.65 3.65 0 0 1-1.053.865c-.42.234-.828.403-1.223.507a8.9 8.9 0 0 1-1.333.235c.45.39.676 1.005.676 1.846v3.11c0 .147.021.266.065.357a.36.36 0 0 0 .208.189c.096.034.18.056.254.064c.074.01.18.013.318.013h2.914c1.032 0 1.914-.366 2.647-1.099c.732-.732 1.099-1.615 1.099-2.647V3.746c0-1.032-.367-1.914-1.1-2.647z"/>
+        </svg>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <a target="_blank" class="social" title="RSS Feed" href="/posts/index.xml">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 1280.000000 1280.000000">
+            <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)" fill="currentColor">
+                <path d="M2295 11929 c-284 -12 -642 -45 -707 -65 -17 -5 -18 -63 -18 -1039 0 -569 4 -1036 8 -1039 5 -3 74 6 153 19 510 86 1168 95 1789 25 1348 -153 2602 -677 3670 -1531 385 -308 820 -744 1126 -1129 842 -1060 1362 -2313 1514 -3650 70 -621 61 -1279 -25 -1789 -13 -79 -22 -148 -19 -153 3 -4 471 -8 1039 -8 l1035 0 5 23 c51 225 85 942 67 1419 -23 605 -77 1044 -198 1617 -294 1400 -927 2734 -1823 3846 -1043 1295 -2364 2259 -3909 2854 -1158 447 -2451 656 -3707 600z"/>
+                <path d="M2255 7845 c-269 -25 -620 -81 -667 -106 -17 -9 -18 -55 -18 -899 0 -706 3 -890 13 -890 6 0 66 18 132 41 130 44 288 79 467 105 154 21 577 30 749 15 1207 -107 2267 -823 2814 -1902 166 -327 268 -637 330 -1001 38 -227 48 -384 42 -662 -8 -348 -44 -590 -126 -831 -23 -66 -41 -126 -41 -132 0 -10 184 -13 890 -13 844 0 890 1 899 18 27 50 88 452 110 725 14 162 14 624 1 782 -59 703 -233 1323 -545 1945 -481 956 -1313 1788 -2270 2268 -620 310 -1239 483 -1940 542 -165 14 -669 10 -840 -5z"/>
+                <path d="M2519 3815 c-391 -66 -725 -336 -868 -703 -79 -201 -96 -462 -45 -677 83 -344 338 -641 666 -774 116 -47 205 -69 330 -80 412 -39 811 153 1040 500 193 292 240 648 128 981 -135 403 -492 699 -914 757 -100 14 -241 12 -337 -4z"/>
+            </g>
+        </svg>
+    </a>
+
+
+    <a target="_blank" class="social" title="Email" href="mailto://blackfeather@runestone.tech">
+       <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1.2em" viewBox="0 0 485.211 485.211">
+            <path fill="currentColor" d="M301.393,241.631L464.866,424.56H20.332l163.474-182.928l58.801,51.443L301.393,241.631z M462.174,60.651H23.027 l219.579,192.142L462.174,60.651z M324.225,221.67l160.986,180.151V80.792L324.225,221.67z M0,80.792v321.029L160.972,221.64 L0,80.792z"/>
+       </svg>
+    </a>
+
+
+        <p class="footnote">
+powered by <a target="_blank" href="https://gohugo.io">Hugo</a> | themed with <a target="_blank" href="https://github.com/lukeorth/poison">poison</a>
+    <br>
+    &copy; 2024 . All rights reserved.
+</p>
+
+  </div>
+</aside>
+
+            <main class="content container">
+                <div class="post">
+  <div class="info">
+  <h1 class="post-title">
+    <a href="/posts/hass/influx_db/">Export Home Assistant metrics to InfluxDB</a>
+  </h1>
+
+  <div class="headline">
+    <div>
+      
+      <time datetime=" 2024-10-13T00:00:00Z" class="post-date">
+        October 13, 2024
+      </time>
+      
+      <span> - </span>
+      <span class="reading-time">
+        
+          
+        
+
+        <span>8 mins read</span>
+      </span>
+    </div>
+
+    
+    <ul class="tags">
+      
+      <li class="tag-home assistant">
+        <a href="/tags/home-assistant">home assistant</a>
+      </li>
+      
+      <li class="tag-databases">
+        <a href="/tags/databases">databases</a>
+      </li>
+      
+      <li class="tag-influxdb">
+        <a href="/tags/influxdb">influxdb</a>
+      </li>
+      
+      <li class="tag-smart home">
+        <a href="/tags/smart-home">smart home</a>
+      </li>
+      
+      <li class="tag-monitoring">
+        <a href="/tags/monitoring">monitoring</a>
+      </li>
+      
+    </ul>
+    
+  </div>
+
+  
+  
+  <p class="seriesname">
+    Series: <a href="/series/home-assistant">home assistant</a>
+  </p>
+  
+
+  
+</div>
+
+  <h2 id="introduction">Introduction:</h2>
+<p><a href="https://www.home-assistant.io/" target="_blank">Home Assistant</a> has become an integral part of my self-hosting / homelab journey.</p>
+<p>My first project was to build ESP32-based temperature and humidity sensors that would report metrics back to Home Assitant. That way, not only would I have real-time data about my house, I could track trends over the seasons! These graphs show when my furnace or AC was kicking on, and could be used for comparisons later after doing insulation projects and home improvement.</p>
+<p>A core issue with this is that by default, <strong>my metrics were being wiped after 10 days</strong>. I needed a much longer retention period (indefinitely, if possible). I also wanted to have a real-time copy of the data outside of Home Assistant, as it would be difficult to replace <em>years</em> of metrics!</p>
+<p><img src="images/hass_sensorexample.png" alt="living room humidity"></p>
+<h2 id="overview">Overview:</h2>
+<p>In this guide we will configure Home Assistant to keep sensor data for longer than the 10-day defaults. Then we will connect it to InfluxDB v2 running on a separate server, which will copy HA sensor data for additional long-term storage and data visualization.</p>
+<p>The best time to setup this exporter is on a new installation, or when first adding the entities that you want to export to InfluxDB. <strong>Home Assistant only exports data from <em>after</em> the exporter was setup</strong>, and does not copy over historical data.</p>
+<blockquote>
+<p>📝 <strong>Note:</strong> Installing Home Assistant, InfluxDB and creating Grafana dashboards with the data is outside of the scope of this guide, but may be covered in the future.</p>
+</blockquote>
+<h2 id="configuration--process">Configuration / Process:</h2>
+<p>To begin with, you will need to have a running Home Assistant server, InfluxDB and something that you want to track. I&rsquo;m currently using a Raspberry Pi 4 with the <a href="https://www.home-assistant.io/installation/raspberrypi" target="_blank">Home Assistant Operating System</a>, which is a very user-friendly way to get started. I recommend this if you&rsquo;re just getting started.</p>
+<p>Add/setup the device you&rsquo;d like to track. This could be pretty much anything in HA that has state data. For easy examples, go the web UI and go to <code>Settings &gt; Devices &amp; Services</code> and click on the Devices tab, then <code>Add Device</code> or go to the device page of an existing one.</p>
+<p><img src="images/ha_devices.png" alt="ha devices tab"></p>
+<h3 id="editing-metric-retention-period">Editing Metric Retention Period</h3>
+<p>The simplest way to do this is to set a global value in the <code>configuration.yaml</code> file for Home Assistant. Based on your installation method, the process may be slightly different. I will describe the method for Home Assistant OS, but check out the <a href="https://www.home-assistant.io/docs/configuration/" target="_blank">Home Assistant guide</a> if needed.</p>
+<blockquote>
+<p>📝 <strong>Note:</strong> If you&rsquo;re okay with using InfluxDB for visualizations, and you don&rsquo;t plan to use the built-in Home Assistant graphs for long-term data, you can skip this step. I like to have it in both places.</p>
+</blockquote>
+<ol>
+<li>Login to the Home Assistant web UI with an admin account.</li>
+<li>Open File Editor on the left sidebar, then click on the Folder icon on at the top left to browse files.
+<img src="images/ha_fileeditor.png" alt="ha file editor"></li>
+<li>Open the file called <code>configuration.yaml</code></li>
+<li>Find the configuration line starting with <code>recorder:</code> (You can use <code>Ctrl + F</code> to search if needed). If it doesn&rsquo;t exist, add the following to the bottom of your <code>configuration.yaml</code>. This will set the retention period to <strong>three years</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#75715e"># Configure days of sensor history to keep</span>
+<span style="color:#f92672">recorder</span>:
+  <span style="color:#f92672">purge_keep_days</span>: <span style="color:#ae81ff">1095</span>
+</code></pre></div><blockquote>
+<p>📝 <strong>Note:</strong> My use case is simple and I have a 256GB SSD attached to Home Assistant server, so storage space isn&rsquo;t too much of an issue. You may want to limit this retention period if you have a lot of devices or limited storage.</p>
+</blockquote>
+<ol start="5">
+<li>Click the Disk icon on the top-right to save your changes.</li>
+<li>Restart Home Assistant to apply the new configuration. You can do this with a full reboot of your server, or by going to <code>Settings</code>, clicking the three dots in the top right corner, clicking <code>Restart Home Assistant &gt; Quick reload</code>.</li>
+</ol>
+<p>Before setting the <code>purge_keep_days</code> to a year or more, I tested with a few weeks and confirmed that the data was actually being kept. This setting above has worked for me for over a year now.</p>
+<h3 id="configure-influxdb-bucket">Configure InfluxDB Bucket</h3>
+<p>We&rsquo;ll need to setup a new bucket to store our Home Assistant metrics.</p>
+<ol>
+<li>Login to your InfluxDB web UI.</li>
+</ol>
+<p><img src="images/influx1.png" alt="influxdb login screen"></p>
+<ol start="2">
+<li>In the left sidebar, go to <code>Load Data &gt; Buckets</code> then click <code>Create Bucket</code> on the right side of the screen.</li>
+</ol>
+<p><img src="images/influx3.png" alt="influxdb button"></p>
+<ol start="3">
+<li>Give it a name and set your desired <code>Delete Data</code> policy. Since I want to keep all sensor data indefinitely, I&rsquo;m using <code>Never</code>, which shows up as <code>Retention: Forever</code> on the Load Data screen.</li>
+</ol>
+<p><img src="images/influx4.png" alt="influxdb bucket menu"></p>
+<h3 id="create-an-api-token">Create an API Token:</h3>
+<p>Home Assistant will need to authenticate in order to write to this database, which requires an API token. For security, we will create a token that works for just the Home Assistant bucket.</p>
+<ol>
+<li>In InfluxDB web UI, go to <code>Load data &gt; API Tokens</code> then click <code>Generate API Token</code> on the right side of the screen and choose <code>Custom API Token</code></li>
+</ol>
+<p><img src="images/influx5.png" alt="influxdb api button"></p>
+<ol start="2">
+<li>Add a description, then search for the bucket we created earlier and assign access to just that bucket.</li>
+</ol>
+<p><img src="images/influx6.png" alt="influxdb api settings"></p>
+<ol start="3">
+<li>Click Generate, then <strong>copy and save your token somewhere safe</strong>, like a password manager. It cannot be displayed again!</li>
+</ol>
+<h3 id="add--configure-influxdb-integration">Add &amp; Configure InfluxDB Integration:</h3>
+<p>Now we need to add an Integration to Home Assistant so it supports transferring all state changes to InfluxDB. This is enabled by referencing it in our <code>configuration.yaml</code>, rather than adding it through the UI.</p>
+<p>For all configuration parameters, see <a href="https://www.home-assistant.io/integrations/influxdb/" target="_blank">InfluxDB Integration Docs</a>.</p>
+<ol>
+<li>Back in the Home Assistant UI, go to <code>File Editor</code> and open the <code>configuration.yaml</code> again.</li>
+<li>At the bottom, start by adding a new section referencing <code>influxdb</code> and then configure it&rsquo;s parameters. Here&rsquo;s an example of what a simple configuration may look like:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">influxdb</span>:
+  <span style="color:#f92672">api_version</span>: <span style="color:#ae81ff">2</span>          <span style="color:#75715e"># Use api_version 2 for InfluxDB 2.0</span>
+  <span style="color:#f92672">ssl</span>: <span style="color:#66d9ef">true</span>               <span style="color:#75715e"># Defaults to true, set to false if not using https</span>
+  <span style="color:#f92672">host</span>: <span style="color:#ae81ff">192.168.1.22</span>     <span style="color:#75715e"># InfluxDB host IP or domain name</span>
+  <span style="color:#f92672">port</span>: <span style="color:#ae81ff">8086</span>              <span style="color:#75715e"># InfluxDB Port</span>
+  <span style="color:#f92672">token</span>:                  <span style="color:#75715e"># Home Assistant API token</span>
+  <span style="color:#f92672">organization</span>: <span style="color:#ae81ff">home     </span> <span style="color:#75715e"># The InfluxDB organisation that the bucket will belong to.</span>
+  <span style="color:#f92672">bucket</span>: <span style="color:#ae81ff">home_assistant </span> <span style="color:#75715e"># The name of the bucket we created earlier</span>
+  <span style="color:#f92672">max_retries</span>: <span style="color:#ae81ff">3</span>          <span style="color:#75715e"># How many times to retry if there is a network error</span>
+  <span style="color:#f92672">include</span>:
+    <span style="color:#f92672">entities</span>:
+      - <span style="color:#ae81ff">sensor.temp1_living_room_humidity</span>
+      - <span style="color:#ae81ff">sensor.temp1_living_room_temp</span>
+      - <span style="color:#ae81ff">sensor.temp2_dining_room_humidity</span>
+      - <span style="color:#ae81ff">sensor.temp2_dining_room_temp</span>
+</code></pre></div><p>By default, Home Assistant will export <em>all</em> entity data. You can narrow it down and selectively export data by using the <code>include</code> section in the example above.</p>
+<p>To find the names of specific entities, browse to <code>Settings &gt; Devices &amp; Services &gt; Entities</code> in the Home Assistant web UI. Then open an entity and click the gear icon to view <code>Entity ID</code>, which you can use to copy and paste into your configuration.</p>
+<p>Remove the <code>include:</code> and <code>entities:</code> sections in this example to export all possible metrics.</p>
+<blockquote>
+<p>📝 <strong>Note about using reverse proxies/SSL for InfluxDB:</strong></p>
+</blockquote>
+<p>My InfluxDB intance is sitting behind Traefik w/ HTTPS, so it&rsquo;s securely accessed at a URL such as <code>https://influxdb.runestone.tech</code> rather than <code>http://ipaddress:8086</code>.</p>
+<p>In this scenario, <code>influxdb.runestone.tech</code> points to the IP address of my Traefik server. Traefik is then configured to route all requests for <code>influxdb</code> over <code>https</code> (port 443) to the destination server, where the InfluxDB container is listening on port 8086.</p>
+<p>If you&rsquo;re using this kind of setup and you want to utilize SSL for your API connections, put the hostname of your InfluxDB service in the <code>host:</code> section and configure <code>port:</code> to use 443, just as if you were connecting with your web browser:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">ssl</span>: <span style="color:#66d9ef">true</span>
+<span style="color:#f92672">host</span>: <span style="color:#ae81ff">influxdb.runestone.tech</span>
+<span style="color:#f92672">port</span>: <span style="color:#ae81ff">443</span>
+</code></pre></div><ol start="3">
+<li>Once you have built your configuration, click the Save icon. You can use the <code>Developer Tools</code> button on the left sidebar and use <code>Check Configuration</code> to make sure the yaml is properly formatted.</li>
+<li>Do a full restart on Home Assistant to begin exporting metrics to InfluxDB. Reloading just the configuration did not work for me, I had to reboot the OS to see data.</li>
+</ol>
+<h3 id="confirming-data-exports-to-influxdb">Confirming Data Exports to InfluxDB</h3>
+<p>Back in the InfluxDB web UI, we can view the metrics from Home Assistant.</p>
+<ol>
+<li>Go to <code>Data Explorer</code> in the left sidebar. In the first box, <code>From</code>, find the bucket you created for the Home Assistant data.</li>
+<li>Now you can filter based on what you are exporting to InfluxDB. In the Filter box, select a key such as <code>_measurement</code> or <code>entity_id</code> and drill down to find your desired metric. Here&rsquo;s an example from my bucket:</li>
+</ol>
+<p><img src="images/influxq1.png" alt="influx db query"></p>
+<ol start="3">
+<li>Then on the middle-right, choose your time frame such as <code>Past 15m</code> and click <code>Submit</code>. This will plot a graph with your data at the top of the page.</li>
+</ol>
+<p>Once you confirm the data is showing up, you can use the built-in InfluxDB Data Explorer to visualize your data, or connect a tool like Grafana to build out dashboards.</p>
+<h2 id="closing-thoughts">Closing Thoughts:</h2>
+<p>Data analytics/visualization is fun! I hope this helped you expand the capability of your Home Assistant setup. Check back periodically for more writeups about this and a deeper look into creating a dashboard with the data from Home Assistant + InfluxDB.</p>
+<h2 id="references--resources">References &amp; Resources:</h2>
+<ul>
+<li><a href="https://www.home-assistant.io/" target="_blank">https://www.home-assistant.io/</a></li>
+<li><a href="https://www.home-assistant.io/installation/raspberrypi" target="_blank">https://www.home-assistant.io/installation/raspberrypi</a></li>
+<li><a href="https://www.home-assistant.io/integrations/influxdb/" target="_blank">https://www.home-assistant.io/integrations/influxdb/</a></li>
+<li><a href="https://community.home-assistant.io/t/preserve-the-history-of-certain-sensors-for-a-longer-period-of-time/576039" target="_blank">https://community.home-assistant.io/t/preserve-the-history-of-certain-sensors-for-a-longer-period-of-time/576039</a></li>
+<li><a href="https://community.home-assistant.io/t/sqlite-to-influxdb-migration-of-historical-data/136926/26" target="_blank">https://community.home-assistant.io/t/sqlite-to-influxdb-migration-of-historical-data/136926/26</a></li>
+<li><a href="https://blog.wesselhissink.nl/homeautomation/long-term-home-assistant-data-history-with-influxdb/" target="_blank">https://blog.wesselhissink.nl/homeautomation/long-term-home-assistant-data-history-with-influxdb/</a></li>
+<li><a href="https://blog.sandydrew.com/2022/08/home-assistant-influxdb-config" target="_blank">https://blog.sandydrew.com/2022/08/home-assistant-influxdb-config</a></li>
+<li><a href="https://dev.to/admantium/home-assistant-collecting-sensor-data-with-influxdb-3mfl" target="_blank">https://dev.to/admantium/home-assistant-collecting-sensor-data-with-influxdb-3mfl</a></li>
+</ul>
+<h2 id="version-history">Version History:</h2>
+<p><strong>Author:</strong> <a href="mailto:blackfeather@runestone.tech">blackfeather@runestone.tech</a>
+<strong>Version:</strong> 1.00
+<strong>Last Updated:</strong> 2024-10-13</p>
+
+  
+  <hr>
+<div class="footer">
+    
+    
+    
+    <p>
+    This is a post in the <b><a href="/series/home-assistant">home assistant</a></b> series.
+        <br>Other posts in this series:
+        <ul class="series">
+            
+            
+            
+            <li>
+                October 13, 2024 -
+                
+                    Export Home Assistant metrics to InfluxDB
+                
+            </li>
+            
+            <li>
+                March 22, 2024 -
+                
+                    <a href="/posts/tasmota_switchbot_mini/">SwitchBot Mini Smart Plugs with Tasmota &#43; Home Assistant</a>
+                
+            </li>
+            
+        </ul>
+    </p>
+    
+</div>
+
+  
+</div>
+            </main>
+            
+  
+    <div class="article-toc ">
+    <div class="toc-wrapper">
+      <h4 id="contents"></h4>
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#introduction">Introduction:</a></li>
+    <li><a href="#overview">Overview:</a></li>
+    <li><a href="#configuration--process">Configuration / Process:</a>
+      <ul>
+        <li><a href="#editing-metric-retention-period">Editing Metric Retention Period</a></li>
+        <li><a href="#configure-influxdb-bucket">Configure InfluxDB Bucket</a></li>
+        <li><a href="#create-an-api-token">Create an API Token:</a></li>
+        <li><a href="#add--configure-influxdb-integration">Add &amp; Configure InfluxDB Integration:</a></li>
+        <li><a href="#confirming-data-exports-to-influxdb">Confirming Data Exports to InfluxDB</a></li>
+      </ul>
+    </li>
+    <li><a href="#closing-thoughts">Closing Thoughts:</a></li>
+    <li><a href="#references--resources">References &amp; Resources:</a></li>
+    <li><a href="#version-history">Version History:</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+  
+
+        </div>
+    </body>
+</html>

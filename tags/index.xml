@@ -6,7 +6,52 @@
     <description>Recent content in Tags on </description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 09 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 13 Oct 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>databases</title>
+      <link>/tags/databases/</link>
+      <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/databases/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>home assistant</title>
+      <link>/tags/home-assistant/</link>
+      <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/home-assistant/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>influxdb</title>
+      <link>/tags/influxdb/</link>
+      <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/influxdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>monitoring</title>
+      <link>/tags/monitoring/</link>
+      <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/monitoring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>smart home</title>
+      <link>/tags/smart-home/</link>
+      <pubDate>Sun, 13 Oct 2024 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/smart-home/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>email</title>
       <link>/tags/email/</link>
@@ -67,24 +112,6 @@
       <pubDate>Fri, 22 Mar 2024 00:00:00 +0000</pubDate>
       
       <guid>/tags/diy/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>home assistant</title>
-      <link>/tags/home-assistant/</link>
-      <pubDate>Fri, 22 Mar 2024 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/home-assistant/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>smart home</title>
-      <link>/tags/smart-home/</link>
-      <pubDate>Fri, 22 Mar 2024 00:00:00 +0000</pubDate>
-      
-      <guid>/tags/smart-home/</guid>
       <description></description>
     </item>
     
